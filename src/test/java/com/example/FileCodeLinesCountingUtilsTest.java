@@ -16,29 +16,31 @@ import org.junit.Test;
 
 public class FileCodeLinesCountingUtilsTest {
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getLOCCountForNull() {
-    FileCodeLinesCountingUtils.getLocCountForFile((File) null);
+    assertEquals(0, FileCodeLinesCountingUtils.getLocCountForFile((File) null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getLOCCountForDir() {
-    FileCodeLinesCountingUtils.getLocCountForFile(new File(System.getProperty("java.io.tmpdir")));
+    assertEquals(0, FileCodeLinesCountingUtils
+        .getLocCountForFile(new File(System.getProperty("java.io.tmpdir"))));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getLOCCountForNotExistingFile() {
     File file = null;
     //make sure file not exists
     while (file == null || file.exists()) {
       file = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
     }
-    FileCodeLinesCountingUtils.getLocCountForFile(file);
+    assertEquals(0, FileCodeLinesCountingUtils.getLocCountForFile(file));
   }
 
   @Test
   public void evaluateLineCommentOpened() {
     final FileCodeLinesCountingUtils.LineEvaluationContext context = new FileCodeLinesCountingUtils.LineEvaluationContext();
+    FileCodeLinesCountingUtils.evaluateLine("/*", context);
     assertTrue(context.isInsideMultilineComment());
     assertFalse(context.isLineHasCode());
   }
@@ -112,7 +114,7 @@ public class FileCodeLinesCountingUtilsTest {
   @Test
   public void testLOCCountForStream() throws IOException {
     try (final InputStreamReader resourceAsStream = new InputStreamReader(
-        FileCodeLinesCountingUtils.class.getResourceAsStream("/test.file"))) {
+        FileCodeLinesCountingUtils.class.getResourceAsStream("/test-file.java"))) {
       assertEquals(6, FileCodeLinesCountingUtils.getLocCountForStream(resourceAsStream));
     }
   }
@@ -121,8 +123,8 @@ public class FileCodeLinesCountingUtilsTest {
   public void testLOCCountForFile() throws IOException {
     File tempFile = null;
     try (final InputStreamReader resourceAsStream = new InputStreamReader(
-        FileCodeLinesCountingUtils.class.getResourceAsStream("/test.file"))) {
-      tempFile = File.createTempFile("LOC-Counter", "txt");
+        FileCodeLinesCountingUtils.class.getResourceAsStream("/test-file.java"))) {
+      tempFile = File.createTempFile("LOC-Counter-Test", ".java");
       tempFile.deleteOnExit();
       try (final FileWriter fileWriter = new FileWriter(tempFile)) {
         IOUtils.copy(resourceAsStream, fileWriter);

@@ -44,7 +44,7 @@ public final class FileCodeLinesCountingUtils {
     return 0;
   }
 
-  public static boolean isJavaFile(final File file) {
+  protected static boolean isJavaFile(final File file) {
     return file != null && file.exists() && file.isFile()
         && file.getName().toLowerCase().endsWith(".java");
   }

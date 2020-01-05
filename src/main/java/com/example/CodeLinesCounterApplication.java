@@ -9,7 +9,7 @@ import java.io.File;
  */
 public class CodeLinesCounterApplication {
 
-  private static final String OUTPUT_TEMPLATE = "%s : %s\n";
+  private static final String OUTPUT_TEMPLATE = "\n%s : %s";
 
   private static final String NO_FILE_OR_FOLDER_PATH_MESSAGE =
       "Error:  File '.java' or folder path expected as an argument";
@@ -27,15 +27,22 @@ public class CodeLinesCounterApplication {
       System.out.println(NO_FILE_OR_FOLDER_PATH_MESSAGE);
       return;
     }
-    for (final String arg : args) {
-      final File file = new File(arg);
-      if (FileCodeLinesCountingUtils.isJavaFile(file)) {
-        outFormatted(file.getName(), FileCodeLinesCountingUtils.getLocCountForFile(file));
-      } else if (file.isDirectory()) {
-        outFormatted(file.getName(), DirCodeLinesCountingUtils.getLocCount(file));
-      } else {
-        outFormatted(file.getName(), NOT_A_JAVA_FILE_MESSAGE);
-      }
+    final File file = new File(args[0]);
+    if (FileCodeLinesCountingUtils.isJavaFile(file)) {
+      outFormatted(file.getName(), FileCodeLinesCountingUtils.getLocCountForFile(file));
+    } else if (file.isDirectory()) {
+      processFolder(file);
+    } else {
+      outFormatted(file.getName(), NOT_A_JAVA_FILE_MESSAGE);
+    }
+  }
+
+  private static void processFolder(final File file) {
+    final File[] dirFiles = DirCodeLinesCountingUtils.listAcceptableFiles(file);
+    for (final File dirFile : dirFiles) {
+      final int locCount = dirFile.isDirectory() ? DirCodeLinesCountingUtils.getLocCount(dirFile)
+          : FileCodeLinesCountingUtils.getLocCountForFile(dirFile);
+      outFormatted(dirFile.getName(), locCount);
     }
   }
 
