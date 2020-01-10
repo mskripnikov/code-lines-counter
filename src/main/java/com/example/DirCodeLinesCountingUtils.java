@@ -23,7 +23,7 @@ public final class DirCodeLinesCountingUtils {
 		if (folder == null || !folder.exists() || !folder.isDirectory()) {
 			return null;
 		}
-		final LocCountingItem item = LocCountingItem.ofDir(folder.getName());
+		final LocCountingItem item = LocCountingItem.of(folder.getName());
 		final File[] files = listAcceptableFiles(folder);
 		for (final File file : files) {
 			if (file.isDirectory()) {

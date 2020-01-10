@@ -15,13 +15,10 @@ public final class LocCountingItem {
 
 	private String name;
 
-	private ItemType itemType;
-
 	private final List<LocCountingItem> items = new ArrayList<>();
 
-	private LocCountingItem(final String name, final ItemType itemType, final int locCount) {
+	private LocCountingItem(final String name, final int locCount) {
 		this.name = name;
-		this.itemType = itemType;
 		this.locCount = locCount;
 	}
 
@@ -29,12 +26,12 @@ public final class LocCountingItem {
 		return locCount;
 	}
 
-	public static LocCountingItem ofDir(final String name) {
-		return new LocCountingItem(name, ItemType.DIR, 0);
+	public static LocCountingItem of(final String name) {
+		return new LocCountingItem(name, 0);
 	}
 
-	public static LocCountingItem ofFile(final String name, final int locCount) {
-		return new LocCountingItem(name, ItemType.DIR, locCount);
+	public static LocCountingItem of(final String name, final int locCount) {
+		return new LocCountingItem(name, locCount);
 	}
 
 	public void aggregate(final LocCountingItem item) {
@@ -47,8 +44,8 @@ public final class LocCountingItem {
 
 	@Override
 	public String toString() {
-		if (itemType == ItemType.FILE) {
-			return String.format(OUTPUT_TEMPLATE, name, locCount);
+		if (locCount == 0) {
+			return "";
 		}
 		final StringBuilder res = new StringBuilder(String.format(OUTPUT_TEMPLATE, name, locCount));
 		items.forEach(item -> res.append(item.toString()));

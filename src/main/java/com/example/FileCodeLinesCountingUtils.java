@@ -40,7 +40,7 @@ public final class FileCodeLinesCountingUtils {
 
 		try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
 			final int count = getLocCountForStream(reader);
-			return LocCountingItem.ofFile(file.getName(), count);
+			return LocCountingItem.of(file.getName(), count);
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
