@@ -2,6 +2,8 @@ package com.example;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -18,13 +20,12 @@ public class FileCodeLinesCountingUtilsTest {
 
   @Test
   public void getLOCCountForNull() {
-    assertEquals(0, FileCodeLinesCountingUtils.getLocCountForFile((File) null));
+    assertNull(FileCodeLinesCountingUtils.getLocCountForFile((File) null));
   }
 
   @Test
   public void getLOCCountForDir() {
-    assertEquals(0, FileCodeLinesCountingUtils
-        .getLocCountForFile(new File(System.getProperty("java.io.tmpdir"))));
+    assertNull(FileCodeLinesCountingUtils.getLocCountForFile(new File(System.getProperty("java.io.tmpdir"))));
   }
 
   @Test
@@ -34,7 +35,7 @@ public class FileCodeLinesCountingUtilsTest {
     while (file == null || file.exists()) {
       file = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
     }
-    assertEquals(0, FileCodeLinesCountingUtils.getLocCountForFile(file));
+    assertNull(FileCodeLinesCountingUtils.getLocCountForFile(file));
   }
 
   @Test
@@ -130,7 +131,10 @@ public class FileCodeLinesCountingUtilsTest {
         IOUtils.copy(resourceAsStream, fileWriter);
       }
 
-      assertEquals(6, FileCodeLinesCountingUtils.getLocCountForFile(tempFile));
+      final LocCountingItem item = FileCodeLinesCountingUtils.getLocCountForFile(tempFile);
+      assertNotNull(item);
+      assertEquals(6, item.getLocCount());
+      assertEquals("\n" + tempFile.getName() + " : 6", item.toString());
 
     } finally {
       if (tempFile != null) {
